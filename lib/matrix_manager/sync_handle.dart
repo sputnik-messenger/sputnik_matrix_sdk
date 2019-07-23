@@ -32,8 +32,9 @@ class SyncHandle {
       if (_isConnected) {
         await accountController.sync(longPollingTimeout: 20000).then((_) {
           _syncBackoff = _initialSyncBackoff;
-        }).catchError((error) {
+        }).catchError((error, stack) {
           debugPrint('sync failed (throttle ${_syncBackoff.inSeconds}s): ${error.toString()} ');
+          debugPrint(stack);
           if (_syncBackoff.inSeconds < 30) {
             _syncBackoff = _syncBackoff * 2.0;
           }
