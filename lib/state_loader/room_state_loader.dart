@@ -15,7 +15,7 @@ class RoomStateLoader {
     return RoomState((builder) => {
           builder
             ..roomId = roomId
-            ..reactions = reactionsAndTimeline.reactionsMap
+            ..reactions = reactionsAndTimeline.reactions
             ..timelineEventStates = reactionsAndTimeline.timeline
             ..roomMembers = MapBuilder<String, UserSummary>(timelineAndMembers.members)
         });
