@@ -146,6 +146,10 @@ class MatrixClient {
     );
   }
 
+  Future<Response> redactEvent(String roomId, String eventId, String reason) {
+    return matrixApi.clientService.redactEvent(roomId, eventId, _newTransactionId(), RedactRequest());
+  }
+
   String _newTransactionId() => 'txn_${random.nextDouble()}';
 }
 

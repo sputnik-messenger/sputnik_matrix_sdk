@@ -131,6 +131,10 @@ class AccountController {
     return _matrixClient.setReadMarker(roomId, eventId);
   }
 
+  Future<Response> redactEvent(String roomId, String eventId, {String reason}) {
+    return _matrixClient.redactEvent(roomId, eventId, reason);
+  }
+
   void unloadRoomState(String roomId) {
     matrixStore.dispatch(UnloadRoomState(userId, roomId));
   }
