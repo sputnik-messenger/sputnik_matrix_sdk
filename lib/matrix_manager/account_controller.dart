@@ -99,6 +99,10 @@ class AccountController {
     }
   }
 
+  Future<Response<PutEventResponse>> sendSticker(String roomId, StickerMessageContent content) {
+    return _matrixClient.sendSticker(roomId, content);
+  }
+
   Future<Response<PutEventResponse>> sendTextMessage(String roomId, String message) {
     return _matrixClient.sendTextMessage(roomId, message);
   }

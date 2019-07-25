@@ -151,6 +151,10 @@ class MatrixClient {
   }
 
   String _newTransactionId() => 'txn_${random.nextDouble()}';
+
+  Future<Response<PutEventResponse>> sendSticker(String roomId, StickerMessageContent content) {
+    return matrixApi.clientService.sendRoomEvent(roomId, 'm.sticker', _newTransactionId(), content.toJson());
+  }
 }
 
 String _syncFilter = '''
