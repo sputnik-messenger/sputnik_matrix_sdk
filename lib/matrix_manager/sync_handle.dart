@@ -34,7 +34,7 @@ class SyncHandle {
           _syncBackoff = _initialSyncBackoff;
         }).catchError((error, stack) {
           debugPrint('sync failed (throttle ${_syncBackoff.inSeconds}s): ${error.toString()} ');
-          debugPrint(stack);
+          debugPrint(stack.toString());
           if (_syncBackoff.inSeconds < 30) {
             _syncBackoff = _syncBackoff * 2.0;
           }
