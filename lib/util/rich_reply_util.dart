@@ -40,7 +40,7 @@ ${_htmlEscape.convert(replyText)}
       toFormattedBody = htmlEscape(toFormattedBody);
     }
     if (toFormattedBody == null) {
-      toFormattedBody = htmlEscape(toBody);
+      toFormattedBody = toBody == null ? '' : htmlEscape(toBody);
     }
 
     String replyBody = replyBodyFor(to.toEvent.sender, toBody, reply);
