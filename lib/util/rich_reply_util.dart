@@ -46,10 +46,16 @@ ${_htmlEscape.convert(replyText)}
     String replyBody = replyBodyFor(to.toEvent.sender, toBody, reply);
     String replyHtml = replyFormattedBodyFor(to.toRoomId, to.toEvent.event_id, to.toEvent.sender, toFormattedBody, reply);
 
+    final relatesTo = RelatesTo(
+      event_id: to.toEvent.event_id,
+      rel_type: 'm.reference',
+      in_reply_to: InReplyTo(event_id: to.toEvent.event_id),
+    );
+
     return RichReply(
       format: 'org.matrix.custom.html',
       msgtype: 'm.text',
-      m_relates_to: RelatesTo(event_id: to.toEvent.event_id),
+      m_relates_to: relatesTo,
       body: replyBody,
       formatted_body: replyHtml,
     );
