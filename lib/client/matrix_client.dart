@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:matrix_rest_api/matrix_client_api_r0.dart';
 import 'package:matrix_rest_api/matrix_identity_service_api_v1.dart';
+import 'package:sputnik_matrix_sdk/util/rich_reply_util.dart';
 
 import 'message_sender.dart';
 
@@ -53,6 +54,18 @@ class MatrixClient {
       'm.room.message',
       transactionId,
       content.toJson(),
+    );
+  }
+
+  Future<Response<PutEventResponse>> sendReplyMessage(String roomId, RoomEvent toEvent, String reply) {
+    final richReply = RichReplyUtil.richReplyFrom(ReplyToInfo(roomId, toEvent), reply);
+
+    return matrixApi.clientService
+        .sendRoomEvent(
+      roomId,
+      'm.room.message',
+      _newTransactionId(),
+      richReply.toJson(),
     );
   }
 
