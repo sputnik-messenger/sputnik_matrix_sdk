@@ -119,6 +119,10 @@ class AccountController {
     return _matrixClient.sendImageMessage(roomId, fileName, mediaContentUri, info);
   }
 
+  Future<Response<PutEventResponse>> sendFileMessage(String roomId, String fileName, mediaContentUri, FileInfo info) {
+    return _matrixClient.sendFileMessage(roomId, fileName, mediaContentUri, info);
+  }
+
   Future<Response<ContentUriResponse>> postMedia(
     String fileName,
     Uri filePath,

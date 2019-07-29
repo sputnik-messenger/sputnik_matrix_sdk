@@ -100,6 +100,23 @@ class MatrixClient {
     );
   }
 
+  Future<Response<PutEventResponse>> sendFileMessage(String roomId, String fileName, String mediaContentUri, FileInfo info) {
+    final content = FileMessage(
+      body: fileName,
+      filename: fileName,
+      msgtype: 'm.file',
+      url: mediaContentUri,
+      info: info,
+    );
+
+    return matrixApi.clientService.sendRoomEvent(
+      roomId,
+      'm.room.message',
+      _newTransactionId(),
+      content.toJson(),
+    );
+  }
+
   Future<Response<ContentUriResponse>> postMediaFromFilePath(
     String fileName,
     Uri filePath,

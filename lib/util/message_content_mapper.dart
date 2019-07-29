@@ -14,6 +14,8 @@ class MessageContentMapper {
         return AudioMessage.fromJson(content);
       case 'm.emote':
         return EmoteMessage.fromJson(content);
+      case 'm.file':
+        return FileMessage.fromJson(content);
       default:
         return GenericMessage.fromJson(content);
     }
