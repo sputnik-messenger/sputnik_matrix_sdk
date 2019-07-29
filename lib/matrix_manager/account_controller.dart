@@ -124,15 +124,23 @@ class AccountController {
     Uri filePath,
     ContentType contentType,
   ) {
-    return _matrixClient.postMedia(fileName, filePath, contentType);
+    return _matrixClient.postMediaFromFilePath(fileName, filePath, contentType);
   }
 
-  Future<Response<ContentUriResponse>> postMediaByteData(
+  Future<Response<ContentUriResponse>> postMediaFromByteList(
+      String fileName,
+      List<int> bytes,
+      ContentType contentType,
+      ) {
+    return _matrixClient.postMediaFromByteList(fileName, bytes, contentType);
+  }
+
+  Future<Response<ContentUriResponse>> postMediaFromByteData(
     String fileName,
     ByteData byteData,
     ContentType contentType,
   ) {
-    return _matrixClient.postMediaByteData(fileName, byteData, contentType);
+    return _matrixClient.postMediaFromByteData(fileName, byteData, contentType);
   }
 
   Future<Response> setReadMarker(String roomId, String eventId) {

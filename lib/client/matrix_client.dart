@@ -60,8 +60,7 @@ class MatrixClient {
   Future<Response<PutEventResponse>> sendReplyMessage(String roomId, RoomEvent toEvent, String reply) {
     final richReply = RichReplyUtil.richReplyFrom(ReplyToInfo(roomId, toEvent), reply);
 
-    return matrixApi.clientService
-        .sendRoomEvent(
+    return matrixApi.clientService.sendRoomEvent(
       roomId,
       'm.room.message',
       _newTransactionId(),
@@ -101,7 +100,7 @@ class MatrixClient {
     );
   }
 
-  Future<Response<ContentUriResponse>> postMedia(
+  Future<Response<ContentUriResponse>> postMediaFromFilePath(
     String fileName,
     Uri filePath,
     ContentType contentType,
@@ -111,16 +110,24 @@ class MatrixClient {
     return matrixApi.mediaService.uploadStream(contentType.toString(), length.toString(), fileName, file.openRead());
   }
 
-  Future<Response<ContentUriResponse>> postMediaByteData(
+  Future<Response<ContentUriResponse>> postMediaFromByteList(
     String fileName,
-    ByteData byteData,
+    List<int> bytes,
     ContentType contentType,
   ) {
     return matrixApi.mediaService.upload(
       contentType.toString(),
       fileName,
-      byteData.buffer.asUint8List().toList(),
+      bytes,
     );
+  }
+
+  Future<Response<ContentUriResponse>> postMediaFromByteData(
+    String fileName,
+    ByteData byteData,
+    ContentType contentType,
+  ) {
+    return postMediaFromByteList(fileName, byteData.buffer.asUint8List().toList(), contentType);
   }
 
   Future<Response<SyncResponse>> singleSync(
