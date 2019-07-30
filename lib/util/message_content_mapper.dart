@@ -8,6 +8,8 @@ class MessageContentMapper {
         return TextMessage.fromJson(content);
       case 'm.image':
         return ImageMessage.fromJson(content);
+      case 'm.video':
+        return VideoMessage.fromJson(content);
       case 'm.notice':
         return NoticeMessage.fromJson(content);
       case 'm.audio':
