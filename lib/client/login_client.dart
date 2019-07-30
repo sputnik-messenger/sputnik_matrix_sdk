@@ -58,6 +58,10 @@ class LoginClient {
     return clientApi;
   }
 
+  Uri get serverBaseUrl {
+    return _clientApi?.baseUrl;
+  }
+
   Future<String> convertToMatrixId(String input) async {
     String medium;
     String address;

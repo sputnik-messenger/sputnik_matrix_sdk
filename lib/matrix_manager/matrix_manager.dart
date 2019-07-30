@@ -41,12 +41,16 @@ class MatrixManager {
       deviceId: deviceId,
       initialDeviceDisplayName: initialDeviceDisplayName,
     );
-    final loginResponse = result.body;
-    await _prepareAccount(loginResponse);
-    matrixStore.dispatch(AddAccount(AccountSummary((builder) => builder
+    LoginResponse loginResponse = result.body;
+
+    final accountSummary = AccountSummary((builder) => builder
+      ..serverUrl = loginResponse.well_known?.m_homeserver?.base_url??_loginClient.serverBaseUrl.toString()
       ..userId = loginResponse.user_id
       ..displayName = loginResponse.user_id
-      ..loginResponse = loginResponse)));
+      ..loginResponse = loginResponse);
+
+    await _prepareAccount(accountSummary);
+    matrixStore.dispatch(AddAccount(accountSummary));
     return result;
   }
 
@@ -66,24 +70,23 @@ class MatrixManager {
     return AccountController(userId, matrixStore, _clients[userId], _accountDatabases[userId]);
   }
 
-  Future<void> _prepareAccount(LoginResponse loginResponse) async {
+  Future<void> _prepareAccount(AccountSummary accountSummary) async {
     final sw = Stopwatch()..start();
-    final db = MatrixAccountDatabase(loginResponse.user_id);
+    final db = MatrixAccountDatabase(accountSummary.userId);
     await db.open();
-    _accountDatabases[loginResponse.user_id] = db;
-    _clients[loginResponse.user_id] = MatrixClient(
-        userAgent,
-        Uri.parse(
-          loginResponse.well_known.m_homeserver.base_url,
-        ),
-        loginResponse.user_id,
-        loginResponse.access_token);
+    _accountDatabases[accountSummary.userId] = db;
+    _clients[accountSummary.userId] = MatrixClient(
+      userAgent,
+      Uri.parse(accountSummary.serverUrl),
+      accountSummary.userId,
+      accountSummary.loginResponse.access_token,
+    );
 
     debugPrint('prepared account in ${sw.elapsedMilliseconds}ms');
   }
 
-  Future<void> _prepareAccounts(Iterable<LoginResponse> loginResponses) async {
-    await Future.forEach(loginResponses, (l) => _prepareAccount(l));
+  Future<void> _prepareAccounts(Iterable<AccountSummary> accountSummaries) async {
+    await Future.forEach(accountSummaries, (s) => _prepareAccount(s));
   }
 
   Future<void> dispose() async {
@@ -113,7 +116,7 @@ class MatrixManager {
       accountDatabaseMap,
     );
 
-    await manager._prepareAccounts(matrixState.accountSummaries.values.map((s) => s.loginResponse));
+    await manager._prepareAccounts(matrixState.accountSummaries.values);
     return manager;
   }
 }
