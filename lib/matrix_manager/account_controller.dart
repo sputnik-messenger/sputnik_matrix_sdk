@@ -111,6 +111,10 @@ class AccountController {
     return _matrixClient.sendReplyMessage(roomId, toEvent, replyText);
   }
 
+  Future<Response<PutEventResponse>> sendReaction(String roomId, RoomEvent toEvent, String reaction) {
+    return _matrixClient.sendReaction(roomId, toEvent, reaction);
+  }
+
   Future<Response<PutEventResponse>> sendAudioMessage(String roomId, String fileName, mediaContentUri, AudioInfo info) {
     return _matrixClient.sendAudioMessage(roomId, fileName, mediaContentUri, info);
   }

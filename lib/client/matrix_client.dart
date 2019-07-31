@@ -68,6 +68,21 @@ class MatrixClient {
     );
   }
 
+  Future<Response<PutEventResponse>> sendReaction(String roomId, RoomEvent toEvent, String reaction) {
+    final relatesTo = RelatesTo(
+      rel_type: 'm.annotation',
+      event_id: toEvent.event_id,
+      key: reaction,
+    );
+
+    return matrixApi.clientService.sendRoomEvent(
+      roomId,
+      'm.reaction',
+      _newTransactionId(),
+      {'m.relates_to': relatesTo.toJson()},
+    );
+  }
+
   Future<Response<PutEventResponse>> sendAudioMessage(String roomId, String fileName, String mediaContentUri, AudioInfo info) {
     final content = AudioMessage(
       body: fileName,
