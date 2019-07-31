@@ -51,10 +51,14 @@ class LoginClient {
       baseUrl = Uri.https(authority, '');
     }
     var clientApi = MatrixClientApi(userAgent, baseUrl);
-    final result = await clientApi.discoveryService.getWellKnownClient();
-    final clientInfo = result.body;
-    final wellKnownBaseUrl = Uri.parse(clientInfo.m_homeserver.base_url);
-    clientApi = MatrixClientApi(userAgent, wellKnownBaseUrl);
+    try {
+      final result = await clientApi.discoveryService.getWellKnownClient();
+      final clientInfo = result.body;
+      final wellKnownBaseUrl = Uri.parse(clientInfo.m_homeserver.base_url);
+      clientApi = MatrixClientApi(userAgent, wellKnownBaseUrl);
+    } on Response<MatrixError> catch (e) {
+      debugPrint('getWellKnownClient failed: status code ${e.statusCode} \n${e.bodyString}\n, matrix-error: ${e.body.toString()}');
+    }
     return clientApi;
   }
 
