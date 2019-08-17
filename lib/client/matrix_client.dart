@@ -39,11 +39,13 @@ class MatrixClient {
           homeServerBaseUrl,
           userId,
           accessToken,
-          MatrixClientApi(userAgent, homeServerBaseUrl, accessTokenProvider: () => accessToken),
+          MatrixClientApi(userAgent, homeServerBaseUrl,
+              accessTokenProvider: () => accessToken),
           MatrixIdentityApi(userAgent, homeServerBaseUrl.toString()),
         );
 
-  Future<Response<PutEventResponse>> sendTextMessage(String roomId, String message) {
+  Future<Response<PutEventResponse>> sendTextMessage(
+      String roomId, String message) {
     final content = GenericMessage(body: message, msgtype: 'm.text');
 
     String transactionId = _newTransactionId();
@@ -57,8 +59,10 @@ class MatrixClient {
     );
   }
 
-  Future<Response<PutEventResponse>> sendReplyMessage(String roomId, RoomEvent toEvent, String reply) {
-    final richReply = RichReplyUtil.richReplyFrom(ReplyToInfo(roomId, toEvent), reply);
+  Future<Response<PutEventResponse>> sendReplyMessage(
+      String roomId, RoomEvent toEvent, String reply) {
+    final richReply =
+        RichReplyUtil.richReplyFrom(ReplyToInfo(roomId, toEvent), reply);
 
     return matrixApi.clientService.sendRoomEvent(
       roomId,
@@ -68,7 +72,8 @@ class MatrixClient {
     );
   }
 
-  Future<Response<PutEventResponse>> sendReaction(String roomId, RoomEvent toEvent, String reaction) {
+  Future<Response<PutEventResponse>> sendReaction(
+      String roomId, RoomEvent toEvent, String reaction) {
     final relatesTo = RelatesTo(
       rel_type: 'm.annotation',
       event_id: toEvent.event_id,
@@ -83,7 +88,8 @@ class MatrixClient {
     );
   }
 
-  Future<Response<PutEventResponse>> sendAudioMessage(String roomId, String fileName, String mediaContentUri, AudioInfo info) {
+  Future<Response<PutEventResponse>> sendAudioMessage(
+      String roomId, String fileName, String mediaContentUri, AudioInfo info) {
     final content = AudioMessage(
       body: fileName,
       msgtype: 'm.audio',
@@ -99,7 +105,8 @@ class MatrixClient {
     );
   }
 
-  Future<Response<PutEventResponse>> sendImageMessage(String roomId, String fileName, String mediaContentUri, ImageInfo info) {
+  Future<Response<PutEventResponse>> sendImageMessage(
+      String roomId, String fileName, String mediaContentUri, ImageInfo info) {
     final content = ImageMessage(
       body: fileName,
       msgtype: 'm.image',
@@ -115,7 +122,8 @@ class MatrixClient {
     );
   }
 
-  Future<Response<PutEventResponse>> sendFileMessage(String roomId, String fileName, String mediaContentUri, FileInfo info) {
+  Future<Response<PutEventResponse>> sendFileMessage(
+      String roomId, String fileName, String mediaContentUri, FileInfo info) {
     final content = FileMessage(
       body: fileName,
       filename: fileName,
@@ -139,7 +147,8 @@ class MatrixClient {
   ) async {
     final file = File.fromUri(filePath);
     final length = await file.length();
-    return matrixApi.mediaService.uploadStream(contentType.toString(), length.toString(), fileName, file.openRead());
+    return matrixApi.mediaService.uploadStream(
+        contentType.toString(), length.toString(), fileName, file.openRead());
   }
 
   Future<Response<ContentUriResponse>> postMediaFromByteList(
@@ -159,7 +168,8 @@ class MatrixClient {
     ByteData byteData,
     ContentType contentType,
   ) {
-    return postMediaFromByteList(fileName, byteData.buffer.asUint8List().toList(), contentType);
+    return postMediaFromByteList(
+        fileName, byteData.buffer.asUint8List().toList(), contentType);
   }
 
   Future<Response<SyncResponse>> singleSync(
@@ -199,13 +209,43 @@ class MatrixClient {
   }
 
   Future<Response> redactEvent(String roomId, String eventId, String reason) {
-    return matrixApi.clientService.redactEvent(roomId, eventId, _newTransactionId(), RedactRequest());
+    return matrixApi.clientService
+        .redactEvent(roomId, eventId, _newTransactionId(), RedactRequest());
   }
 
   String _newTransactionId() => 'txn_${random.nextDouble()}';
 
-  Future<Response<PutEventResponse>> sendSticker(String roomId, StickerMessageContent content) {
-    return matrixApi.clientService.sendRoomEvent(roomId, 'm.sticker', _newTransactionId(), content.toJson());
+  Future<Response<PutEventResponse>> sendSticker(
+      String roomId, StickerMessageContent content) {
+    return matrixApi.clientService.sendRoomEvent(
+        roomId, 'm.sticker', _newTransactionId(), content.toJson());
+  }
+
+  Future<Response<dynamic>> setPusher(String appId, String pusherTarget, String pushKey) {
+    final setPusherRequest = SetPusherRequest(
+        lang: "en",
+        kind: "http",
+        app_display_name: "Sputnik Messenger",
+        profile_tag: "default",
+        device_display_name: "Sputnik Device_${Random().nextInt(2000)}",
+        app_id: appId,
+        pushkey: pushKey,
+        data: PusherData(
+          url: pusherTarget,
+          format: 'event_id_only',
+        ));
+    return matrixApi.clientService.setPusher(setPusherRequest);
+  }
+
+  Future<Response<dynamic>> deletePusher(String appId, String pushKey) {
+    final setPusherRequest = SetPusherRequest(
+      lang: "en",
+      kind: null,
+      app_id: appId,
+      pushkey: pushKey,
+      data: null,
+    );
+    return matrixApi.clientService.setPusher(setPusherRequest);
   }
 }
 

@@ -162,4 +162,12 @@ class AccountController {
   void unloadRoomState(String roomId) {
     matrixStore.dispatch(UnloadRoomState(userId, roomId));
   }
+
+  Future<Response<dynamic>> setPusher(String appId, String pusherTarget, String pushKey) {
+    return _matrixClient.setPusher(appId, pusherTarget, pushKey);
+  }
+
+  Future<Response<dynamic>> deletePusher(String appId, String pushKey) {
+    return _matrixClient.deletePusher(appId, pushKey);
+  }
 }
